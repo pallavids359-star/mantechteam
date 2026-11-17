@@ -75,8 +75,7 @@ app.use('/api/projects', auth, require('./routes/projects'));
 app.use('/api/tasks', auth, require('./routes/tasks'));
 
 app.use('/api/meetings', auth, require('./routes/meetings'));
-const chatFilesRouter = resolveMiddleware(require('./routes/chatfiles'));
-if (!chatFilesRouter) throw new TypeError('Chat-file router export is not callable');
+const chatFilesRouter = require('./routes/chatfiles');
 app.use('/api/chat-files', auth, chatFilesRouter);
 app.use('/api/messages', auth, require('./routes/messages'));
 app.use('/api/documents', auth, require('./routes/documents'));
