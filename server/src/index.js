@@ -32,6 +32,35 @@ for (const k of ['MONGO_URI', 'JWT_SECRET']) {
 
 const app = express();
 const server = http.createServer(app);
+const originalAppUse = app.use.bind(app);
+
+app.use = (...args) => {
+  const handlers =
+    typeof args[0] === 'string' || args[0] instanceof RegExp
+      ? args.slice(1)
+      : args;
+
+  const badIndex = handlers.findIndex(
+    handler => typeof handler !== 'function'
+  );
+
+  if (badIndex !== -1) {
+    console.error(
+      '[INVALID APP.USE HANDLER]',
+      args[0],
+      'handler index:',
+      badIndex,
+      'type:',
+      typeof handlers[badIndex],
+      'keys:',
+      Object.keys(handlers[badIndex] || {})
+    );
+
+    throw new TypeError(`Invalid app.use handler: ${String(args[0])}`);
+  }
+
+  return originalAppUse(...args);
+};
 const clientOrigins = Array.from(new Set([
   process.env.CLIENT_URL,
   process.env.VERCEL_URL && `https://${process.env.VERCEL_URL}`,
