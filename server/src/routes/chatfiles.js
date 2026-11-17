@@ -71,5 +71,4 @@ router.post('/:channel', (req, res, next) => {
   await notifyChat(req.params.channel, req.user, req.body?.text || 'Shared an attachment');
   res.status(201).json(msg);
 });
-
-module.exports = { default: router };
+module.exports = router;
